@@ -1,5 +1,3 @@
-import 'package:uuid/uuid.dart';
-
 class NoteModel {
   final String id;
   final String title;
@@ -7,20 +5,18 @@ class NoteModel {
   final String category; // 'General', 'Work', 'Study', 'Code', 'Ideas'
   final bool isPinned;
   final String? colorHex;
-  final List<String>? tags;
   final DateTime updatedAt;
 
   NoteModel({
-    String? id,
+    required this.id,
     required this.title,
     required this.content,
     this.category = 'General',
     this.isPinned = false,
     this.colorHex,
-    this.tags,
     DateTime? updatedAt,
-  })  : id = (id == null || id.isEmpty) ? const Uuid().v4() : id,
-        updatedAt = updatedAt ?? DateTime.now();
+    required List<String> tags,
+  }) : updatedAt = updatedAt ?? DateTime.now();
 
   NoteModel copyWith({
     String? id,
@@ -29,7 +25,6 @@ class NoteModel {
     String? category,
     bool? isPinned,
     String? colorHex,
-    List<String>? tags,
     DateTime? updatedAt,
   }) {
     return NoteModel(
@@ -39,7 +34,6 @@ class NoteModel {
       category: category ?? this.category,
       isPinned: isPinned ?? this.isPinned,
       colorHex: colorHex ?? this.colorHex,
-      tags: tags ?? this.tags,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
