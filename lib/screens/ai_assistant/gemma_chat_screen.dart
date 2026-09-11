@@ -326,7 +326,8 @@ class _GemmaChatScreenState extends State<GemmaChatScreen> {
               _buildConfigTile(
                 icon: Icons.link_rounded,
                 title: 'Local Server Endpoint',
-                subtitle: aiService.localServerEndpoint,
+                subtitle: '${aiService.localServerEndpoint} (Tap to change IP)',
+                onTap: () => _showEditEndpointDialog(ctx),
                 trailing: _isServerConnected
                     ? const Chip(
                         label: Text(
@@ -342,7 +343,7 @@ class _GemmaChatScreenState extends State<GemmaChatScreen> {
                       )
                     : const Chip(
                         label: Text(
-                          'OFFLINE (FALLBACK)',
+                          'OFFLINE ENGINE',
                           style: TextStyle(
                             fontSize: 10,
                             color: Colors.white,
@@ -411,15 +412,70 @@ class _GemmaChatScreenState extends State<GemmaChatScreen> {
     );
   }
 
+  void _showEditEndpointDialog(BuildContext modalCtx) {
+    final aiService = GemmaAiService.instance;
+    final controller = TextEditingController(text: aiService.localServerEndpoint);
+
+    showDialog(
+      context: context,
+      builder: (dlgCtx) {
+        return AlertDialog(
+          title: const Text('Configure Local Server IP'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'If your PC is running LM Studio on the same Wi-Fi, enter your PC\'s Wi-Fi IP address (e.g. http://192.168.1.5:1234/v1). Otherwise leave default for 100% offline mode.',
+                style: TextStyle(fontSize: 12),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: controller,
+                decoration: const InputDecoration(
+                  labelText: 'Server URL',
+                  hintText: 'http://192.168.1.X:1234/v1',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(dlgCtx),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                final newUrl = controller.text.trim();
+                if (newUrl.isNotEmpty) {
+                  await aiService.saveEndpoint(newUrl);
+                  await _checkOfflineEnvironment();
+                  if (mounted) {
+                    Navigator.pop(dlgCtx);
+                    Navigator.pop(modalCtx);
+                    _showModelDetailsModal();
+                  }
+                }
+              },
+              child: const Text('Save & Test'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildConfigTile({
     required IconData icon,
     required String title,
     required String subtitle,
     required Widget trailing,
+    VoidCallback? onTap,
   }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
-    return Container(
+    final tileContent = Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E293B) : const Color(0xFFF1F5F9),
@@ -457,6 +513,15 @@ class _GemmaChatScreenState extends State<GemmaChatScreen> {
         ],
       ),
     );
+
+    if (onTap != null) {
+      return InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: tileContent,
+      );
+    }
+    return tileContent;
   }
 
   @override

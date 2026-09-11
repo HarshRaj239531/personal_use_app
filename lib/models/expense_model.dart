@@ -1,3 +1,5 @@
+import 'package:uuid/uuid.dart';
+
 class ExpenseModel {
   final String id;
   final String title;
@@ -9,15 +11,17 @@ class ExpenseModel {
   final String? notes;
 
   ExpenseModel({
-    required this.id,
+    String? id,
     required this.title,
     required this.amount,
     required this.type,
     required this.category,
-    required this.paymentMode,
-    required this.date,
+    String? paymentMode,
+    DateTime? date,
     this.notes,
-  });
+  })  : id = (id == null || id.isEmpty) ? const Uuid().v4() : id,
+        paymentMode = paymentMode ?? 'UPI',
+        date = date ?? DateTime.now();
 
   Map<String, dynamic> toMap() {
     return {
@@ -39,7 +43,7 @@ class ExpenseModel {
       amount: (map['amount'] as num).toDouble(),
       type: map['type'] as String,
       category: map['category'] as String,
-      paymentMode: map['paymentMode'] as String,
+      paymentMode: map['paymentMode'] as String? ?? 'UPI',
       date: DateTime.parse(map['date'] as String),
       notes: map['notes'] as String?,
     );
