@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../core/constants/app_colors.dart';
+import 'ai_assistant/gemma_chat_screen.dart';
 import 'dashboard/dashboard_screen.dart';
 import 'tasks/tasks_screen.dart';
 import 'expenses/expenses_screen.dart';
@@ -33,6 +34,33 @@ class _MainScreenState extends State<MainScreen> {
       body: IndexedStack(
         index: _currentIndex,
         children: _pages,
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => const GemmaChatScreen()),
+          );
+        },
+        elevation: 6,
+        backgroundColor: const Color(0xFF6366F1),
+        icon: Container(
+          padding: const EdgeInsets.all(4),
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.white24,
+          ),
+          child: const Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 18),
+        ),
+        label: Text(
+          'Gemma AI',
+          style: GoogleFonts.plusJakartaSans(
+            fontWeight: FontWeight.bold,
+            fontSize: 13,
+            color: Colors.white,
+            letterSpacing: 0.3,
+          ),
+        ),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(

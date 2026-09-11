@@ -4,6 +4,7 @@ import '../core/constants/app_colors.dart';
 import '../widgets/glass_card.dart';
 
 // Import All Screens
+import 'ai_assistant/gemma_chat_screen.dart';
 import 'dashboard/dashboard_screen.dart';
 import 'expenses/expenses_screen.dart';
 import 'study/study_screen.dart';
@@ -44,11 +45,107 @@ class HubScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Top Featured AI Hero Banner
+            InkWell(
+              borderRadius: BorderRadius.circular(20),
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const GemmaChatScreen()),
+              ),
+              child: Container(
+                padding: const EdgeInsets.all(18),
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF312E81), Color(0xFF1E1B4B), Color(0xFF0F172A)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: const Color(0xFF6366F1).withValues(alpha: 0.5),
+                    width: 1.5,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: const Color(0xFF6366F1).withValues(alpha: 0.2),
+                      blurRadius: 16,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF6366F1), Color(0xFF06B6D4)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: const Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 28),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                'Gemma 4 AI Copilot',
+                                style: GoogleFonts.plusJakartaSans(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w800,
+                                ),
+                              ),
+                              const SizedBox(width: 8),
+                              Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF06B6D4).withValues(alpha: 0.25),
+                                  borderRadius: BorderRadius.circular(6),
+                                  border: Border.all(color: const Color(0xFF06B6D4), width: 0.8),
+                                ),
+                                child: const Text(
+                                  'OFFLINE',
+                                  style: TextStyle(
+                                    fontSize: 9,
+                                    color: Color(0xFF22D3EE),
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            '100% on-device local intelligence. RAG connected to all 27 LifeOS modules.',
+                            style: GoogleFonts.plusJakartaSans(
+                              color: const Color(0xFF94A3B8),
+                              fontSize: 12,
+                              height: 1.3,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white70, size: 16),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 24),
+
             _buildCategorySection(
               context,
               title: 'Core & Daily Productivity',
               subtitle: 'Daily focus, task management, learning, and cash flow',
               items: [
+                _HubItem('Gemma 4 AI', 'On-device intelligence', Icons.auto_awesome_rounded, const Color(0xFF6366F1), const GemmaChatScreen()),
                 _HubItem('Dashboard', 'Command center overview', Icons.dashboard_rounded, AppColors.primary, const DashboardScreen()),
                 _HubItem('Expenses', 'Budget & transaction log', Icons.account_balance_wallet_rounded, AppColors.success, const ExpensesScreen()),
                 _HubItem('Study Tracker', 'Learning sessions & ratings', Icons.menu_book_rounded, AppColors.secondary, const StudyScreen()),

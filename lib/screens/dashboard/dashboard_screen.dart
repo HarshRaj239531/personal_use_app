@@ -8,6 +8,7 @@ import '../../widgets/daily_brief_card.dart';
 import '../../widgets/glass_card.dart';
 import '../../widgets/metric_stat_card.dart';
 import '../../widgets/quick_add_modal.dart';
+import '../ai_assistant/gemma_chat_screen.dart';
 import '../time_tracker/time_tracker_screen.dart';
 import '../tasks/tasks_screen.dart';
 import '../expenses/expenses_screen.dart';
@@ -88,7 +89,127 @@ class DashboardScreen extends StatelessWidget {
               DailyBriefCard(brief: brief, userName: provider.userName),
               const SizedBox(height: 16),
 
-              // 2. High-Level Metric Stat Cards
+              // 2. Gemma 4 AI Assistant Feature Spotlight
+              GlassCard(
+                borderRadius: 16,
+                gradient: isDark
+                    ? const LinearGradient(
+                        colors: [Color(0xFF1E1B4B), Color(0xFF172554)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      )
+                    : const LinearGradient(
+                        colors: [Color(0xFFF1F5F9), Color(0xFFE2E8F0)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
+                border: Border.all(
+                  color: const Color(0xFF6366F1).withValues(alpha: 0.4),
+                  width: 1.2,
+                ),
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [Color(0xFF6366F1), Color(0xFF06B6D4)],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: const Icon(Icons.auto_awesome_rounded, color: Colors.white, size: 18),
+                            ),
+                            const SizedBox(width: 10),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Gemma 4 AI Copilot',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontWeight: FontWeight.w800,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                                Text(
+                                  '100% Offline • Local SQLite Context',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 11,
+                                    color: const Color(0xFF06B6D4),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        InkWell(
+                          borderRadius: BorderRadius.circular(12),
+                          onTap: () => Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => const GemmaChatScreen()),
+                          ),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                            decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  'Chat',
+                                  style: GoogleFonts.plusJakartaSans(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(width: 4),
+                                const Icon(Icons.arrow_forward_rounded, size: 14, color: Colors.white),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 8,
+                      children: [
+                        _buildAiChip(
+                          context,
+                          label: '📚 DSA Sprint',
+                          prompt: 'Create a focused DSA and coding study plan for me this week.',
+                        ),
+                        _buildAiChip(
+                          context,
+                          label: '💰 Audit Budget',
+                          prompt: 'Can you do an audit of my monthly expenses and net savings?',
+                        ),
+                        _buildAiChip(
+                          context,
+                          label: '🎤 Mock Interview',
+                          prompt: 'Give me a challenging technical interview question on Flutter architecture with a model answer.',
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // 3. High-Level Metric Stat Cards
               GridView.count(
                 crossAxisCount: 2,
                 shrinkWrap: true,
@@ -133,7 +254,7 @@ class DashboardScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // 3. Live Active Timer / Quick Stopwatch Bar
+              // 4. Live Active Timer / Quick Stopwatch Bar
               GlassCard(
                 borderRadius: 16,
                 padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
@@ -206,7 +327,7 @@ class DashboardScreen extends StatelessWidget {
               ),
               const SizedBox(height: 20),
 
-              // 4. Today's Priority Focus Tasks
+              // 5. Today's Priority Focus Tasks
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -287,7 +408,7 @@ class DashboardScreen extends StatelessWidget {
                 ),
               const SizedBox(height: 20),
 
-              // 5. Daily Habits Streak Ribbon
+              // 6. Daily Habits Streak Ribbon
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -363,7 +484,7 @@ class DashboardScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
-              // 6. Active Hierarchical OKRs / Goals Progress
+              // 7. Active Hierarchical OKRs / Goals Progress
               if (provider.goals.isNotEmpty) ...[
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -444,6 +565,39 @@ class DashboardScreen extends StatelessWidget {
               ],
               const SizedBox(height: 32),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildAiChip(BuildContext context, {required String label, required String prompt}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return InkWell(
+      borderRadius: BorderRadius.circular(14),
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => GemmaChatScreen(initialPrompt: prompt),
+          ),
+        );
+      },
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF0F172A) : Colors.white,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: const Color(0xFF6366F1).withValues(alpha: 0.3),
+          ),
+        ),
+        child: Text(
+          label,
+          style: GoogleFonts.plusJakartaSans(
+            fontSize: 11,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),

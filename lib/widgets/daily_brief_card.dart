@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import '../core/constants/app_colors.dart';
 import '../core/utils/formatters.dart';
+import '../screens/ai_assistant/gemma_chat_screen.dart';
 import 'glass_card.dart';
 
 class DailyBriefCard extends StatelessWidget {
@@ -59,7 +60,7 @@ class DailyBriefCard extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 6),
-                      const Text('👋', style: TextStyle(fontSize: 18)),
+                      const Text('⚡', style: TextStyle(fontSize: 18)),
                     ],
                   ),
                   const SizedBox(height: 2),
@@ -73,27 +74,39 @@ class DailyBriefCard extends StatelessWidget {
                   ),
                 ],
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                decoration: BoxDecoration(
-                  color: AppColors.primary.withValues(alpha: 0.2),
-                  borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: AppColors.primary.withValues(alpha: 0.4)),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.bolt_rounded, size: 16, color: AppColors.primaryLight),
-                    const SizedBox(width: 4),
-                    Text(
-                      'Daily Brief',
-                      style: GoogleFonts.plusJakartaSans(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.primaryLight,
-                      ),
+              InkWell(
+                borderRadius: BorderRadius.circular(20),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const GemmaChatScreen()),
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [Color(0xFF6366F1), Color(0xFF06B6D4)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                  ],
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.auto_awesome_rounded, size: 14, color: Colors.white),
+                      const SizedBox(width: 4),
+                      Text(
+                        'Gemma 4 AI',
+                        style: GoogleFonts.plusJakartaSans(
+                          fontSize: 11,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -155,6 +168,46 @@ class DailyBriefCard extends StatelessWidget {
                   ),
                 ),
               ],
+            ),
+          ),
+          const SizedBox(height: 12),
+          InkWell(
+            borderRadius: BorderRadius.circular(10),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const GemmaChatScreen(
+                    initialPrompt: 'What should I prioritize today based on my active tasks and habit streak?',
+                  ),
+                ),
+              );
+            },
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppColors.primary.withValues(alpha: 0.25)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.offline_bolt_rounded, size: 16, color: AppColors.primaryLight),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      'Ask Gemma 4 Copilot: "What should I prioritize today?"',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.primaryLight,
+                      ),
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                  const Icon(Icons.arrow_forward_rounded, size: 14, color: AppColors.primaryLight),
+                ],
+              ),
             ),
           ),
         ],

@@ -1,3 +1,5 @@
+import 'package:uuid/uuid.dart';
+
 class NoteModel {
   final String id;
   final String title;
@@ -5,17 +7,20 @@ class NoteModel {
   final String category; // 'General', 'Work', 'Study', 'Code', 'Ideas'
   final bool isPinned;
   final String? colorHex;
+  final List<String>? tags;
   final DateTime updatedAt;
 
   NoteModel({
-    required this.id,
+    String? id,
     required this.title,
     required this.content,
     this.category = 'General',
     this.isPinned = false,
     this.colorHex,
+    this.tags,
     DateTime? updatedAt,
-  }) : updatedAt = updatedAt ?? DateTime.now();
+  })  : id = (id == null || id.isEmpty) ? const Uuid().v4() : id,
+        updatedAt = updatedAt ?? DateTime.now();
 
   NoteModel copyWith({
     String? id,
@@ -24,6 +29,7 @@ class NoteModel {
     String? category,
     bool? isPinned,
     String? colorHex,
+    List<String>? tags,
     DateTime? updatedAt,
   }) {
     return NoteModel(
@@ -33,6 +39,7 @@ class NoteModel {
       category: category ?? this.category,
       isPinned: isPinned ?? this.isPinned,
       colorHex: colorHex ?? this.colorHex,
+      tags: tags ?? this.tags,
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
@@ -56,8 +63,12 @@ class NoteModel {
       content: map['content'] as String,
       category: map['category'] as String? ?? 'General',
       isPinned: (map['isPinned'] as int? ?? 0) == 1,
-      colorHex: (map['colorHex'] as String?)?.isEmpty ?? true ? null : map['colorHex'] as String,
-      updatedAt: DateTime.parse(map['updatedAt'] as String? ?? DateTime.now().toIso8601String()),
+      colorHex: (map['colorHex'] as String?)?.isEmpty ?? true
+          ? null
+          : map['colorHex'] as String,
+      updatedAt: DateTime.parse(
+        map['updatedAt'] as String? ?? DateTime.now().toIso8601String(),
+      ),
     );
   }
 }

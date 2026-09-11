@@ -1,3 +1,5 @@
+import 'package:uuid/uuid.dart';
+
 class TaskModel {
   final String id;
   final String title;
@@ -11,7 +13,7 @@ class TaskModel {
   final DateTime createdAt;
 
   TaskModel({
-    required this.id,
+    String? id,
     required this.title,
     this.description,
     this.priority = 'Medium',
@@ -19,9 +21,14 @@ class TaskModel {
     this.isCompleted = false,
     this.linkedGoalId,
     this.linkedProjectId,
-    this.tag,
+    String? tag,
+    String? category,
     DateTime? createdAt,
-  }) : createdAt = createdAt ?? DateTime.now();
+  })  : id = (id == null || id.isEmpty) ? const Uuid().v4() : id,
+        tag = tag ?? category,
+        createdAt = createdAt ?? DateTime.now();
+
+  String? get category => tag;
 
   TaskModel copyWith({
     String? id,
@@ -33,6 +40,7 @@ class TaskModel {
     String? linkedGoalId,
     String? linkedProjectId,
     String? tag,
+    String? category,
     DateTime? createdAt,
   }) {
     return TaskModel(
@@ -44,7 +52,7 @@ class TaskModel {
       isCompleted: isCompleted ?? this.isCompleted,
       linkedGoalId: linkedGoalId ?? this.linkedGoalId,
       linkedProjectId: linkedProjectId ?? this.linkedProjectId,
-      tag: tag ?? this.tag,
+      tag: tag ?? category ?? this.tag,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -68,14 +76,26 @@ class TaskModel {
     return TaskModel(
       id: map['id'] as String,
       title: map['title'] as String,
-      description: (map['description'] as String?)?.isEmpty ?? true ? null : map['description'] as String,
+      description: (map['description'] as String?)?.isEmpty ?? true
+          ? null
+          : map['description'] as String,
       priority: map['priority'] as String? ?? 'Medium',
-      dueDate: (map['dueDate'] as String?)?.isNotEmpty == true ? DateTime.parse(map['dueDate'] as String) : null,
+      dueDate: (map['dueDate'] as String?)?.isNotEmpty == true
+          ? DateTime.parse(map['dueDate'] as String)
+          : null,
       isCompleted: (map['isCompleted'] as int? ?? 0) == 1,
-      linkedGoalId: (map['linkedGoalId'] as String?)?.isEmpty ?? true ? null : map['linkedGoalId'] as String,
-      linkedProjectId: (map['linkedProjectId'] as String?)?.isEmpty ?? true ? null : map['linkedProjectId'] as String,
-      tag: (map['tag'] as String?)?.isEmpty ?? true ? null : map['tag'] as String,
-      createdAt: DateTime.parse(map['createdAt'] as String? ?? DateTime.now().toIso8601String()),
+      linkedGoalId: (map['linkedGoalId'] as String?)?.isEmpty ?? true
+          ? null
+          : map['linkedGoalId'] as String,
+      linkedProjectId: (map['linkedProjectId'] as String?)?.isEmpty ?? true
+          ? null
+          : map['linkedProjectId'] as String,
+      tag: (map['tag'] as String?)?.isEmpty ?? true
+          ? null
+          : map['tag'] as String,
+      createdAt: DateTime.parse(
+        map['createdAt'] as String? ?? DateTime.now().toIso8601String(),
+      ),
     );
   }
 }
